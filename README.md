@@ -2,7 +2,7 @@
 
 ## 📋 Overview
 
-This repository contains C# utilities designed to simplify constructing requests for the QuickBase API and provide intuitive interfaces for building insert, update, delete, and query operations on QuickBase tables.
+QuickbaseNet is a versatile C# library designed to simplify and streamline interactions with the QuickBase API. Tailored for developers looking to efficiently perform CRUD operations and build complex queries, QuickbaseNet offers a set of intuitive tools including `QuickBaseCommandBuilder`, `QueryBuilder`, and `QuickbaseClient`. Whether you're managing database records or crafting detailed queries, QuickbaseNet enhances your experience with QuickBase tables through its fluent and user-friendly interfaces.
 
 ## ✨ Features
 
@@ -13,121 +13,107 @@ This repository contains C# utilities designed to simplify constructing requests
 
 ## 💾 Installation
 
-Provide installation instructions, such as NuGet package installation, cloning a repository, or manually adding files.
+To get started with QuickbaseNet, you can install it via NuGet or clone the repository:
 
 ```bash
-# Example: NuGet Package Installation
-Install-Package YourPackageName
+# Install via NuGet
+Install-Package QuickbaseNet
+
+# Or clone the repository
+git clone https://github.com/yourusername/quickbase-net.git
 ```
 
-## 🛠️ Setup
+## 🛠️ Usage
 
-### QuickbaseClient Initialization 🌟
+QuickbaseNet simplifies working with the QuickBase API across various operations. Here's how you can use its main features:
 
-Initialize `QuickbaseClient` with your realm hostname and user token for a secure connection.
+### Initializing QuickbaseClient 🌟
 
 ```csharp
+// Initialize QuickbaseClient with your realm hostname and user token
 var quickbaseClient = new QuickbaseClient("your_realm_hostname", "your_user_token");
 ```
-### Handling Responses 📬
-Sending a Query Request
+
+### Handling API Responses 📬
+
+#### Sending a Query Request
+
 ```csharp
+// Build a query using QueryBuilder
 var query = new QueryBuilder()
     .From("bck7gp3q2")
     .Select(1, 2, 3)
     .Where("{1.CT.'hello'}")
     .Build();
 
+// Send the query and handle the response
 var (response, error, isSuccess) = await quickbaseClient.QueryRecords(query);
 
 if (isSuccess)
 {
-    // Process the response
-    // response.Data, response.Fields, response.Metadata...
+    // Process the successful response
 }
 else
 {
     // Handle the error
-    // error.Message, error.Description...
 }
 ```
 
-Inserting Records
+#### Inserting Records
+
 ```csharp
+// Configure and build an insert request using QuickBaseCommandBuilder
 var insertRequest = new QuickBaseCommandBuilder()
-    // ... configuration for insert request
+    .ForTable("your_table_id")
+    // Add configuration for insert request...
     .BuildInsertOrUpdateRequest();
 
+// Send the insert request and handle the response
 var (response, error, isSuccess) = await quickbaseClient.InsertRecords(insertRequest);
 
 if (isSuccess)
 {
-    // Response handling for successful insert
+    // Handle successful insert response
 }
 else
 {
-    // Error handling
+    // Process the error
 }
 ```
 
-Updating Records
+#### Updating Records
+
 ```csharp
+// Configure and build an update request
 var updateRequest = new QuickBaseCommandBuilder()
-    // ... configuration for update request
+    .ForTable("your_table_id")
+    // Add configuration for update request...
     .BuildInsertOrUpdateRequest();
 
+// Send the update request and handle the response
 var (response, error, isSuccess) = await quickbaseClient.UpdateRecords(updateRequest);
 
 if (isSuccess)
 {
-    // Response handling for successful update
+    // Handle successful update response
 }
 else
 {
-    // Error handling
+    // Process the error
 }
 ```
 
-### QuickBaseCommandBuilder Usage 🧩
-
-#### Inserting Records 💾
+#### Deleting Records
 
 ```csharp
-var commandBuilder = new QuickBaseCommandBuilder()
-    .ForTable("your_table_id")
-    .AddNewRecord(record => record
-        .AddField("fieldId1", "Value1")
-        .AddField("fieldId2", "Value2"))
-    .BuildInsertOrUpdateRequest();
-
-// Send request using QuickbaseClient
-var response = await quickbaseClient.InsertOrUpdateRecords(commandBuilder);
-```
-
-#### Updating Records 🔄
-
-```csharp
-var commandBuilder = new QuickBaseCommandBuilder()
-    .ForTable("your_table_id")
-    .UpdateRecord(123, record => record
-        .AddField("fieldId1", "New Value1")
-        .AddField("fieldId2", "New Value2"))
-    .BuildInsertOrUpdateRequest();
-
-// Send request using QuickbaseClient
-var response = await quickbaseClient.InsertOrUpdateRecords(commandBuilder);
-```
-
-#### Deleting Records ❌
-
-```csharp
-var commandBuilder = new QuickBaseCommandBuilder()
+// Build a delete request using QuickBaseCommandBuilder
+var deleteRequest = new QuickBaseCommandBuilder()
     .ForTable("your_table_id")
     .WithDeletionCriteria("{6.EX.'hello'}")
     .BuildDeleteRequest();
 
-// Send request using QuickbaseClient
-var response = await quickbaseClient.DeleteRecords(commandBuilder);
+// Send the delete request and handle the response
+var response = await quickbaseClient.DeleteRecords(deleteRequest);
 ```
 
 ### QueryBuilder - Crafting Queries with Precision 🔎
@@ -135,6 +121,7 @@ var response = await quickbaseClient.DeleteRecords(commandBuilder);
 #### Building and Sending a Query 📤
 
 ```csharp
+// Create a query using QueryBuilder
 var query = new QueryBuilder()
     .From("bck7gp3q2")
     .Select(1, 2, 3)
@@ -144,13 +131,18 @@ var query = new QueryBuilder()
     .GroupBy(6, "equal-values")
     .Build();
 
-// Send query using QuickbaseClient
+// Send the query and handle the response
 var response = await quickbaseClient.QueryRecords(query);
 ```
 
 ## 👐 Contributing
+
 Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
 
 ## 📜 License
 
 Distributed under the MIT License. See [LICENSE](https://github.com/ducksoop/quickbase-net/blob/master/LICENSE.txt) for more information.
+
+## 📚 Additional Resources
+
+- [QuickBase API Documentation](https://developer.quickbase.com)
