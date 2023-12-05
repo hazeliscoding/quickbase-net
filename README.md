@@ -1,4 +1,4 @@
-# QuickBaseCommandBuilder & QueryBuilder 🚀
+# QuickbaseNet 🚀
 
 ## 📋 Overview
 
