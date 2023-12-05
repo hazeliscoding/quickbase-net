@@ -29,6 +29,64 @@ Initialize `QuickbaseClient` with your realm hostname and user token for a secur
 ```csharp
 var quickbaseClient = new QuickbaseClient("your_realm_hostname", "your_user_token");
 ```
+### Handling Responses 📬
+Sending a Query Request
+```csharp
+var query = new QueryBuilder()
+    .From("bck7gp3q2")
+    .Select(1, 2, 3)
+    .Where("{1.CT.'hello'}")
+    .Build();
+
+var (response, error, isSuccess) = await quickbaseClient.QueryRecords(query);
+
+if (isSuccess)
+{
+    // Process the response
+    // response.Data, response.Fields, response.Metadata...
+}
+else
+{
+    // Handle the error
+    // error.Message, error.Description...
+}
+```
+
+Inserting Records
+```csharp
+var insertRequest = new QuickBaseCommandBuilder()
+    // ... configuration for insert request
+    .BuildInsertOrUpdateRequest();
+
+var (response, error, isSuccess) = await quickbaseClient.InsertRecords(insertRequest);
+
+if (isSuccess)
+{
+    // Response handling for successful insert
+}
+else
+{
+    // Error handling
+}
+```
+
+Updating Records
+```csharp
+var updateRequest = new QuickBaseCommandBuilder()
+    // ... configuration for update request
+    .BuildInsertOrUpdateRequest();
+
+var (response, error, isSuccess) = await quickbaseClient.UpdateRecords(updateRequest);
+
+if (isSuccess)
+{
+    // Response handling for successful update
+}
+else
+{
+    // Error handling
+}
+```
 
 ### QuickBaseCommandBuilder Usage 🧩
 
