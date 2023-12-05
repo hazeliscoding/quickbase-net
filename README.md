@@ -1,7 +1,3 @@
-Certainly! Adding emojis to headers can make your README more engaging and visually appealing. Here's a revised version of the README with emojis and more descriptive headers:
-
----
-
 # QuickBaseCommandBuilder & QueryBuilder 🚀
 
 ## 📋 Overview
