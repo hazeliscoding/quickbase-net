@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.8.34322.80
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickbaseNet", "QuickbaseNet\QuickbaseNet.csproj", "{375B33E5-C837-4915-844C-52057055E84C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuickbaseNet.Examples", "QuickbaseNet.Examples\QuickbaseNet.Examples.csproj", "{F92A2FF7-450E-4672-8781-BC648ACE2ACF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{375B33E5-C837-4915-844C-52057055E84C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{375B33E5-C837-4915-844C-52057055E84C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{375B33E5-C837-4915-844C-52057055E84C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{375B33E5-C837-4915-844C-52057055E84C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F92A2FF7-450E-4672-8781-BC648ACE2ACF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F92A2FF7-450E-4672-8781-BC648ACE2ACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F92A2FF7-450E-4672-8781-BC648ACE2ACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F92A2FF7-450E-4672-8781-BC648ACE2ACF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7005CC6B-BF98-4DD3-A3B8-59AFFF01C840}
+	EndGlobalSection
+EndGlobal
