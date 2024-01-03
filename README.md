@@ -2,12 +2,12 @@
 
 ## 📋 Overview
 
-QuickbaseNet is a versatile C# library designed to simplify and streamline interactions with the QuickBase API. Tailored for developers looking to efficiently perform CRUD operations and build complex queries, QuickbaseNet offers a set of intuitive tools including `QuickBaseCommandBuilder`, `QueryBuilder`, and `QuickbaseClient`. Whether you're managing database records or crafting detailed queries, QuickbaseNet enhances your experience with QuickBase tables through its fluent and user-friendly interfaces.
+QuickbaseNet is a versatile C# library designed to simplify and streamline interactions with the QuickBase API. <!-- Tailored for developers looking to efficiently perform CRUD operations and build complex queries, QuickbaseNet offers a set of intuitive tools including `QuickBaseCommandBuilder`, `QueryBuilder`, and `QuickbaseClient`. Whether you're managing database records or crafting detailed queries, QuickbaseNet enhances your experience with QuickBase tables through its fluent and user-friendly interfaces. -->
 
 ## ✨ Features
 
 - **Fluent Interface 🌊**: Methods for building various requests easily and intuitively.
-- **Comprehensive CRUD Operations 🛠️**: `QuickBaseCommandBuilder` for adding new records, updating existing ones, or deleting records efficiently.
+<!-- - **Comprehensive CRUD Operations 🛠️**: `QuickBaseCommandBuilder` for adding new records, updating existing ones, or deleting records efficiently. -->
 - **Advanced Query Support 🔍**: `QueryBuilder` for constructing complex query requests with ease.
 - **Seamless Client Setup 🌐**: `QuickbaseClient` for initializing connections with realm and user token for secure and straightforward API interaction.
 
@@ -20,7 +20,7 @@ To get started with QuickbaseNet, you can install it via NuGet or clone the repo
 Install-Package QuickbaseNet
 
 # Or clone the repository
-git clone https://github.com/yourusername/quickbase-net.git
+git clone https://github.com/ducksoop/quickbase-net.git
 ```
 
 ## 🛠️ Usage
