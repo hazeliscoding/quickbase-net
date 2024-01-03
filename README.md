@@ -34,6 +34,7 @@ QuickbaseNet simplifies working with the QuickBase API across various operations
 var quickbaseClient = new QuickbaseClient("your_realm_hostname", "your_user_token");
 ```
 
+<!--
 ### Handling API Responses 📬
 
 #### Sending a Query Request
@@ -115,7 +116,8 @@ var deleteRequest = new QuickBaseCommandBuilder()
 // Send the delete request and handle the response
 var response = await quickbaseClient.DeleteRecords(deleteRequest);
 ```
-
+##
+-->
 ### QueryBuilder - Crafting Queries with Precision 🔎
 
 #### Building and Sending a Query 📤
