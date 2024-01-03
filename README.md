@@ -1,4 +1,4 @@
-# QuickbaseNet 🚀
+# QuickbaseNet 🚀 [![NuGet](https://img.shields.io/nuget/v/QuickbaseNet?label=NuGet&logo=nuget&style=flat-square)](https://www.nuget.org/packages/QuickbaseNet/)
 
 ## 📋 Overview
 
