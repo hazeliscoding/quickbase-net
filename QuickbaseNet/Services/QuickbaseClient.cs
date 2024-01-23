@@ -34,7 +34,12 @@ namespace QuickbaseNet.Services
             if (response.IsSuccessStatusCode)
             {
                 var queryResponse = JsonConvert.DeserializeObject<QuickbaseQueryResponse>(jsonResponse);
-                return QuickbaseResult.Success(queryResponse);
+
+                // Check if data is null or empty
+                return queryResponse.Data.Count == 0
+                    ? QuickbaseResult.Failure<QuickbaseQueryResponse>(QuickbaseError.NotFound("QuickbaseNet.Failure",
+                        "No records found", $"The query did not find any records matching that criteria"))
+                    : QuickbaseResult.Success(queryResponse);
             }
 
             var errorResponse = JsonConvert.DeserializeObject<QuickbaseErrorResponse>(jsonResponse);
@@ -52,6 +57,7 @@ namespace QuickbaseNet.Services
                 return QuickbaseResult.Failure<QuickbaseQueryResponse>(QuickbaseError.ServerError("QuickbaseNet.ServerError", errorResponse.Message, errorResponse.Description));
             }
 
+            // Return generic failure
             return QuickbaseResult.Failure<QuickbaseQueryResponse>(QuickbaseError.Failure("QuickbaseNet.Failure", errorResponse.Message, errorResponse.Description));
         }
 
