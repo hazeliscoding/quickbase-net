@@ -3,6 +3,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using QuickbaseNet.Errors;
 using QuickbaseNet.Requests;
 using QuickbaseNet.Responses;
 
@@ -23,20 +24,35 @@ namespace QuickbaseNet.Services
             Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
         }
 
-        public async Task<(QuickbaseQueryResponse Response, QuickbaseErrorResponse Error, bool IsSuccess)> QueryRecords(QuickbaseQueryRequest quickBaseRequest)
+        public async Task<QuickbaseResult<QuickbaseQueryResponse>> QueryRecords(QuickbaseQueryRequest quickBaseRequest)
         {
             HttpContent content = new StringContent(JsonConvert.SerializeObject(quickBaseRequest), Encoding.UTF8, "application/json");
 
             var response = await Client.PostAsync("/v1/records/query", content);
+            var jsonResponse = await response.Content.ReadAsStringAsync();
 
             if (response.IsSuccessStatusCode)
             {
-                var jsonResponse = await response.Content.ReadAsStringAsync();
-                return (JsonConvert.DeserializeObject<QuickbaseQueryResponse>(jsonResponse), null, true);
+                var queryResponse = JsonConvert.DeserializeObject<QuickbaseQueryResponse>(jsonResponse);
+                return QuickbaseResult.Success(queryResponse);
             }
 
-            var errorResponse = await response.Content.ReadAsStringAsync();
-            return (null, JsonConvert.DeserializeObject<QuickbaseErrorResponse>(errorResponse), false);
+            var errorResponse = JsonConvert.DeserializeObject<QuickbaseErrorResponse>(jsonResponse);
+
+            // Check if its 4xx error
+            if (response.StatusCode >= System.Net.HttpStatusCode.BadRequest &&
+                response.StatusCode < System.Net.HttpStatusCode.InternalServerError)
+            {
+                return QuickbaseResult.Failure<QuickbaseQueryResponse>(QuickbaseError.ClientError("QuickbaseNet.ClientError", errorResponse.Message, errorResponse.Description));
+            }
+
+            // Check if its 5xx error
+            if (response.StatusCode >= System.Net.HttpStatusCode.InternalServerError)
+            {
+                return QuickbaseResult.Failure<QuickbaseQueryResponse>(QuickbaseError.ServerError("QuickbaseNet.ServerError", errorResponse.Message, errorResponse.Description));
+            }
+
+            return QuickbaseResult.Failure<QuickbaseQueryResponse>(QuickbaseError.Failure("QuickbaseNet.Failure", errorResponse.Message, errorResponse.Description));
         }
 
         internal async Task<(QuickbaseRecordUpdateResponse Response, QuickbaseErrorResponse Error, bool IsSuccess)>
