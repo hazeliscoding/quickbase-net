@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 
-namespace QuickbaseNet.Requests;
-
-public class DeleteRecordRequest
+namespace QuickbaseNet.Requests
 {
-    [JsonProperty("from")]    
-    public string From { get; set; }
-    [JsonProperty("where")]
-    public string Where { get; set; }
+    public class DeleteRecordRequest
+    {
+        [JsonProperty("from")]    
+        public string From { get; set; }
+        [JsonProperty("where")]
+        public string Where { get; set; }
+    }
 }

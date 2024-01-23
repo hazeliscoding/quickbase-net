@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
-using System.Text.Json.Serialization;
 
-namespace QuickbaseNet.Models;
-
-public class FieldValue
+namespace QuickbaseNet.Models
 {
-    [JsonProperty("value")]
-    public dynamic Value { get; set; }
+    public class FieldValue
+    {
+        [JsonProperty("value")]
+        public dynamic Value { get; set; }
+    }
 }
