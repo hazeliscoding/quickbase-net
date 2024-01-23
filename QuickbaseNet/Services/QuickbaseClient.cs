@@ -13,21 +13,21 @@ namespace QuickbaseNet.Services
         private const string BaseUrl = "https://api.quickbase.com";
         private const string UserAgent = "QuickbaseNet/0.1.1";
 
-        private readonly HttpClient _httpClient = new HttpClient();
+        public HttpClient Client { get; set; } = new HttpClient();
 
         public QuickbaseClient(string realm, string userToken)
         {
-            _httpClient.BaseAddress = new Uri(BaseUrl);
-            _httpClient.DefaultRequestHeaders.Add("QB-Realm-Hostname", $"{realm}.quickbase.com");
-            _httpClient.DefaultRequestHeaders.Add("Authorization", $"QB-USER-TOKEN {userToken}");
-            _httpClient.DefaultRequestHeaders.Add("User-Agent", UserAgent);
+            Client.BaseAddress = new Uri(BaseUrl);
+            Client.DefaultRequestHeaders.Add("QB-Realm-Hostname", $"{realm}.quickbase.com");
+            Client.DefaultRequestHeaders.Add("Authorization", $"QB-USER-TOKEN {userToken}");
+            Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
         }
 
         public async Task<(QuickbaseQueryResponse Response, QuickbaseErrorResponse Error, bool IsSuccess)> QueryRecords(QuickbaseQueryRequest quickBaseRequest)
         {
             HttpContent content = new StringContent(JsonConvert.SerializeObject(quickBaseRequest), Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("/v1/records/query", content);
+            var response = await Client.PostAsync("/v1/records/query", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -44,7 +44,7 @@ namespace QuickbaseNet.Services
         {
             HttpContent content = new StringContent(JsonConvert.SerializeObject(quickBaseRequest), Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("/v1/records", content);
+            var response = await Client.PostAsync("/v1/records", content);
 
             if (response.IsSuccessStatusCode)
             {
@@ -61,7 +61,7 @@ namespace QuickbaseNet.Services
         {
             HttpContent content = new StringContent(JsonConvert.SerializeObject(quickBaseRequest), Encoding.UTF8, "application/json");
 
-            var response = await _httpClient.PostAsync("/v1/records", content);
+            var response = await Client.PostAsync("/v1/records", content);
 
             if (response.IsSuccessStatusCode)
             {
