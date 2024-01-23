@@ -12,7 +12,7 @@
 
 	<PropertyGroup>
 		<PackageId>QuickbaseNet</PackageId>
-		<Version>0.1.1</Version>
+		<Version>1.0.0</Version>
 		<Authors>ducksoop</Authors>
 		<Description>Unofficial Quickbase JSON API wrapper for .NET. Provides Query and Command builders for querying and adding/editing records.</Description>
 		<RepositoryUrl>https://github.com/ducksoop/quickbase-net</RepositoryUrl>

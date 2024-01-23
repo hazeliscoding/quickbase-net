@@ -11,7 +11,7 @@ namespace QuickbaseNet.Services
     public class QuickbaseClient
     {
         private const string BaseUrl = "https://api.quickbase.com";
-        private const string UserAgent = "QuickbaseNet/0.1.1";
+        private const string UserAgent = "QuickbaseNet/1.0.0";
 
         private readonly HttpClient _httpClient = new HttpClient();
 
