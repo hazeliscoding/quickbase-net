@@ -13,7 +13,7 @@ namespace QuickbaseNet.Examples
             var query = new QuickbaseQueryBuilder()
                 .From("bmycek2xq")
                 .Select(3, 7, 14, 75, 150, 157, 354, 355, 367, 538, 539, 540, 541, 542, 543)
-                .Where("{'7'.'CT'.'10136'}")
+                .Where("{'7'.'EX'.'10136'}")
                 .Build();
 
             string jsonRequest = JsonConvert.SerializeObject(query);
@@ -22,12 +22,12 @@ namespace QuickbaseNet.Examples
             if (result.IsSuccess)
             {
                 Console.WriteLine("Success!");
-                Console.WriteLine(JsonConvert.SerializeObject(result.Response, Formatting.Indented));
+                Console.WriteLine(JsonConvert.SerializeObject(result.Value, Formatting.Indented));
             }
             else
             {
                 Console.WriteLine("Error!");
-                Console.WriteLine(JsonConvert.SerializeObject(result.Error, Formatting.Indented));
+                Console.WriteLine(JsonConvert.SerializeObject(result.QuickbaseError, Formatting.Indented));
             }
 
             // var recordBuilder = new QuickbaseCommandBuilder()
