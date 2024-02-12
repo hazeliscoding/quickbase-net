@@ -18,6 +18,15 @@ namespace QuickbaseNet.Services
 
         public QuickbaseClient(string realm, string userToken)
         {
+            if (string.IsNullOrEmpty(realm))
+            {
+                throw new ArgumentNullException(nameof(realm), "Realm cannot be null or empty");
+            }
+
+            if (string.IsNullOrEmpty(userToken))
+            {
+                throw new ArgumentNullException(nameof(userToken), "User token cannot be null or empty");
+            }
             Client.BaseAddress = new Uri(BaseUrl);
             Client.DefaultRequestHeaders.Add("QB-Realm-Hostname", $"{realm}.quickbase.com");
             Client.DefaultRequestHeaders.Add("Authorization", $"QB-USER-TOKEN {userToken}");
@@ -51,18 +60,11 @@ namespace QuickbaseNet.Services
                 return QuickbaseResult.Failure<QuickbaseQueryResponse>(QuickbaseError.ClientError("QuickbaseNet.ClientError", errorResponse.Message, errorResponse.Description));
             }
 
-            // Check if its 5xx error
-            if (response.StatusCode >= System.Net.HttpStatusCode.InternalServerError)
-            {
-                return QuickbaseResult.Failure<QuickbaseQueryResponse>(QuickbaseError.ServerError("QuickbaseNet.ServerError", errorResponse.Message, errorResponse.Description));
-            }
-
-            // Return generic failure
-            return QuickbaseResult.Failure<QuickbaseQueryResponse>(QuickbaseError.Failure("QuickbaseNet.Failure", errorResponse.Message, errorResponse.Description));
+            // Its a 5xx error
+            return QuickbaseResult.Failure<QuickbaseQueryResponse>(QuickbaseError.ServerError("QuickbaseNet.ServerError", errorResponse.Message, errorResponse.Description));
         }
 
-        internal async Task<(QuickbaseRecordUpdateResponse Response, QuickbaseErrorResponse Error, bool IsSuccess)>
-            InsertRecords(InsertOrUpdateRecordRequest quickBaseRequest)
+        public async Task<(QuickbaseRecordUpdateResponse Response, QuickbaseErrorResponse Error, bool IsSuccess)> InsertRecords(InsertOrUpdateRecordRequest quickBaseRequest)
         {
             HttpContent content = new StringContent(JsonConvert.SerializeObject(quickBaseRequest), Encoding.UTF8, "application/json");
 
@@ -78,7 +80,7 @@ namespace QuickbaseNet.Services
             return (null, JsonConvert.DeserializeObject<QuickbaseErrorResponse>(errorResponse), false);
         }
 
-        internal async Task<(QuickbaseRecordUpdateResponse Response, QuickbaseErrorResponse Error, bool IsSuccess)>
+        public async Task<(QuickbaseRecordUpdateResponse Response, QuickbaseErrorResponse Error, bool IsSuccess)>
             UpdateRecords(InsertOrUpdateRecordRequest quickBaseRequest)
         {
             HttpContent content = new StringContent(JsonConvert.SerializeObject(quickBaseRequest), Encoding.UTF8, "application/json");

@@ -9,44 +9,47 @@ namespace QuickbaseNet.Examples
     {
         static async Task Main(string[] args)
         {
-            var quickBaseClient = new QuickbaseClient("diamond", Environment.GetEnvironmentVariable("QB_USERTOKEN"));
-            var query = new QuickbaseQueryBuilder()
-                .From("bmycek2xq")
-                .Select(3, 7, 14, 75, 150, 157, 354, 355, 367, 538, 539, 540, 541, 542, 543)
-                .Where("{'7'.'EX'.'10136'}")
-                .Build();
+            var quickBaseClient = new QuickbaseClient("builderprogram-pcohen", "b4mtg6_p7vz_0_dcmcjr3bdtp4csdtuu6qx3tyzuc");
 
-            string jsonRequest = JsonConvert.SerializeObject(query);
+            var insertCommand = new QuickbaseCommandBuilder()
+                .ForTable("bsfhutyzn")
+                .ReturnFields(1, 2, 3)
+                .AddNewRecord(record => record
+                    .AddField("6", "Cupcakes")
+                    .AddField("7", "$14"))
+                .BuildInsertUpdateCommand();
 
-            var result = await quickBaseClient.QueryRecords(query);
+            var result = await quickBaseClient.InsertRecords(insertCommand);
+            
+            // var quickBaseClient = new QuickbaseClient("diamond", Environment.GetEnvironmentVariable("QB_USERTOKEN"));
+            // var query = new QuickbaseQueryBuilder()
+            //     .From("bsfhutyzn")
+            //     .Select(6, 7, 8, 9, 10, 11, 12, 13)
+            //     .Build();
+            //
+            // string jsonRequest = JsonConvert.SerializeObject(query);
+            //
+            // var result = await quickBaseClient.QueryRecords(query);
             if (result.IsSuccess)
             {
                 Console.WriteLine("Success!");
                 Console.WriteLine(JsonConvert.SerializeObject(result.Value, Formatting.Indented));
             }
-            else
+            else if (result.IsFailure)
             {
                 Console.WriteLine("Error!");
                 Console.WriteLine(JsonConvert.SerializeObject(result.QuickbaseError, Formatting.Indented));
             }
 
-            // var recordBuilder = new QuickbaseCommandBuilder()
-            //     .ForTable("your_table_id")
-            //     .ReturnFields(1, 2, 3)
-            //     .AddRecord(record => record
-            //         .AddField("fieldId1", "Value1")
-            //         .AddField("fieldId2", "Value2"))
-            //     .AddRecord(record => record
-            //         .AddField("fieldId1", "Another Value1")
-            //         .AddField("fieldId2", "Another Value2"));
-            //
+
+            
             // InsertOrUpdateRecordRequest request = recordBuilder.Build();
 
-            var commandBuilder = new QuickbaseCommandBuilder()
-                .ForTable("bck7gp3q2")
-                .WithDeletionCriteria("{6.EX.'hello'}");
-
-            DeleteRecordRequest deleteRequest = commandBuilder.BuildDeleteCommand();
+            // var commandBuilder = new QuickbaseCommandBuilder()
+            //     .ForTable("bck7gp3q2")
+            //     .WithDeletionCriteria("{6.EX.'hello'}");
+            //
+            // DeleteRecordRequest deleteRequest = commandBuilder.BuildDeleteCommand();
 
         }
     }
