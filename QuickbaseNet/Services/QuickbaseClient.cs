@@ -27,6 +27,7 @@ namespace QuickbaseNet.Services
             {
                 throw new ArgumentNullException(nameof(userToken), "User token cannot be null or empty");
             }
+
             Client.BaseAddress = new Uri(BaseUrl);
             Client.DefaultRequestHeaders.Add("QB-Realm-Hostname", $"{realm}.quickbase.com");
             Client.DefaultRequestHeaders.Add("Authorization", $"QB-USER-TOKEN {userToken}");

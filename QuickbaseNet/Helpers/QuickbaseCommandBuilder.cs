@@ -43,7 +43,6 @@ namespace QuickbaseNet.Helpers
             return this;
         }
 
-
         public QuickbaseCommandBuilder WithDeletionCriteria(string whereClause)
         {
             _whereClauseForDeletion = whereClause;
@@ -73,9 +72,9 @@ namespace QuickbaseNet.Helpers
         {
             private readonly Dictionary<string, FieldValue> _fields = new Dictionary<string, FieldValue>();
 
-            public RecordBuilder AddField<T>(string fieldId, T value)
+            public RecordBuilder AddField<T>(int fieldId, T value)
             {
-                _fields[fieldId] = new FieldValue { Value = value }; 
+                _fields[fieldId.ToString()] = new FieldValue { Value = value }; 
                 return this;
             }
 
