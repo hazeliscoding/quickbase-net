@@ -9,13 +9,25 @@ using QuickbaseNet.Responses;
 
 namespace QuickbaseNet.Services
 {
+    /// <summary>
+    /// Provides methods for interacting with the QuickBase API.
+    /// </summary>
     public class QuickbaseClient
     {
         private const string BaseUrl = "https://api.quickbase.com";
         private const string UserAgent = "QuickbaseNet/1.0.0";
 
+        /// <summary>
+        /// Gets or sets the HTTP client used to make requests to the QuickBase API.
+        /// </summary>
         public HttpClient Client { get; set; } = new HttpClient();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="QuickbaseClient"/> class with the specified realm and user token.
+        /// </summary>
+        /// <param name="realm">The realm hostname of the QuickBase account.</param>
+        /// <param name="userToken">The user token used for authentication.</param>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="realm"/> or <paramref name="userToken"/> is null or empty.</exception>
         public QuickbaseClient(string realm, string userToken)
         {
             if (string.IsNullOrEmpty(realm))
@@ -34,6 +46,11 @@ namespace QuickbaseNet.Services
             Client.DefaultRequestHeaders.Add("User-Agent", UserAgent);
         }
 
+        /// <summary>
+        /// Sends a query request to the QuickBase API and retrieves the response.
+        /// </summary>
+        /// <param name="quickBaseRequest">The query request to send.</param>
+        /// <returns>A task representing the asynchronous operation. The task result contains the query response.</returns>
         public async Task<QuickbaseResult<QuickbaseQueryResponse>> QueryRecords(QuickbaseQueryRequest quickBaseRequest)
         {
             HttpContent content = new StringContent(JsonConvert.SerializeObject(quickBaseRequest), Encoding.UTF8, "application/json");
@@ -65,6 +82,11 @@ namespace QuickbaseNet.Services
             return QuickbaseResult.Failure<QuickbaseQueryResponse>(QuickbaseError.ServerError("QuickbaseNet.ServerError", errorResponse.Message, errorResponse.Description));
         }
 
+        /// <summary>
+        /// Sends a request to insert records to the QuickBase API and retrieves the response.
+        /// </summary>
+        /// <param name="quickBaseRequest">The insert request to send.</param>
+        /// <returns>A task representing the asynchronous operation. The task result contains the insert response.</returns>
         public async Task<QuickbaseResult<QuickbaseRecordUpdateResponse>> InsertRecords(InsertOrUpdateRecordRequest quickBaseRequest)
         {
             HttpContent content = new StringContent(JsonConvert.SerializeObject(quickBaseRequest), Encoding.UTF8, "application/json");
@@ -98,6 +120,11 @@ namespace QuickbaseNet.Services
             return QuickbaseResult.Failure<QuickbaseRecordUpdateResponse>(QuickbaseError.ServerError("QuickbaseNet.ServerError", errorResponse, "Server error"));
         }
 
+        /// <summary>
+        /// Sends a request to update records in the QuickBase API and retrieves the response.
+        /// </summary>
+        /// <param name="quickBaseRequest">The update request to send.</param>
+        /// <returns>A task representing the asynchronous operation. The task result contains the update response.</returns>
         public async Task<QuickbaseResult<QuickbaseRecordUpdateResponse>> UpdateRecords(InsertOrUpdateRecordRequest quickBaseRequest)
         {
             HttpContent content = new StringContent(JsonConvert.SerializeObject(quickBaseRequest), Encoding.UTF8, "application/json");
@@ -131,8 +158,12 @@ namespace QuickbaseNet.Services
             return QuickbaseResult.Failure<QuickbaseRecordUpdateResponse>(QuickbaseError.ServerError("QuickbaseNet.ServerError", errorResponse, "Server error"));
         }
 
-        public async Task<QuickbaseResult<QuickbaseRecordUpdateResponse>> DeleteRecords(
-            DeleteRecordRequest quickBaseRequest)
+        /// <summary>
+        /// Sends a request to delete records from the QuickBase API and retrieves the response.
+        /// </summary>
+        /// <param name="quickBaseRequest">The delete request to send.</param>
+        /// <returns>A task representing the asynchronous operation. The task result contains the delete response.</returns>
+        public async Task<QuickbaseResult<QuickbaseRecordUpdateResponse>> DeleteRecords(DeleteRecordRequest quickBaseRequest)
         {
             // Serialize your request object into a JSON string
             var requestJson = JsonConvert.SerializeObject(quickBaseRequest);
