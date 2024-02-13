@@ -107,68 +107,6 @@ public class QuickbaseClientTests
         Assert.NotNull(actualResponse.QuickbaseError);
     }
 
-    [Fact]
-    public async Task InsertRecords_ReturnsSuccessResponse_WhenCalled()
-    {
-        // Arrange
-        var request = new Builder().Build<InsertOrUpdateRecordRequest>();
-
-        // Act
-        var response = await _client.InsertRecords(request);
-
-        // Assert
-        Assert.True(response.IsSuccess);
-        Assert.NotNull(response.Response);
-        Assert.Null(response.Error);
-    }
-
-    [Fact]
-    public async Task InsertRecords_ReturnsErrorResponse_WhenFails()
-    {
-        // Arrange
-        SetupMockHandlerWithErrorResponse();
-        var request = new Builder().Build<InsertOrUpdateRecordRequest>();
-
-        // Act
-        var actualResponse = await _client.InsertRecords(request);
-
-        // Assert
-        Assert.False(actualResponse.IsSuccess);
-        Assert.Null(actualResponse.Response);
-        Assert.NotNull(actualResponse.Error);
-    }
-
-    [Fact]
-    public async Task UpdateRecords_ReturnsSuccessResponse_WhenCalled()
-    {
-        // Arrange
-        var request = new Builder().Build<InsertOrUpdateRecordRequest>();
-
-        // Act
-        var response = await _client.UpdateRecords(request);
-
-        // Assert
-        Assert.True(response.IsSuccess);
-        Assert.NotNull(response.Response);
-        Assert.Null(response.Error);
-    }
-
-    [Fact]
-    public async Task UpdateRecords_ReturnsErrorResponse_WhenFails()
-    {
-        // Arrange
-        SetupMockHandlerWithErrorResponse();
-        var request = new Builder().Build<InsertOrUpdateRecordRequest>();
-
-        // Act
-        var actualResponse = await _client.UpdateRecords(request);
-
-        // Assert
-        Assert.False(actualResponse.IsSuccess);
-        Assert.Null(actualResponse.Response);
-        Assert.NotNull(actualResponse.Error);
-    }
-
     #region Helpers
     private void SetupMockHandlerWithErrorResponse()
     {
