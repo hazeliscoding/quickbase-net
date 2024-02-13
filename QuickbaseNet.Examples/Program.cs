@@ -15,8 +15,9 @@ namespace QuickbaseNet.Examples
                 .ForTable("bsfhutyzn")
                 .ReturnFields(1, 2, 3)
                 .AddNewRecord(record => record
-                    .AddField("6", "Cupcakes")
-                    .AddField("7", "$14"))
+                    .AddField("6", "Hired consulting firm to do market study.")
+                    .AddField("7", 5000)
+                    .AddField("9", "2023-01-01"))
                 .BuildInsertUpdateCommand();
 
             var result = await quickBaseClient.InsertRecords(insertCommand);

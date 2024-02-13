@@ -64,7 +64,7 @@ namespace QuickbaseNet.Services
             return QuickbaseResult.Failure<QuickbaseQueryResponse>(QuickbaseError.ServerError("QuickbaseNet.ServerError", errorResponse.Message, errorResponse.Description));
         }
 
-        public async Task<(QuickbaseRecordUpdateResponse Response, QuickbaseErrorResponse Error, bool IsSuccess)> InsertRecords(InsertOrUpdateRecordRequest quickBaseRequest)
+        public async Task<QuickbaseResult<QuickbaseRecordUpdateResponse>> InsertRecords(InsertOrUpdateRecordRequest quickBaseRequest)
         {
             HttpContent content = new StringContent(JsonConvert.SerializeObject(quickBaseRequest), Encoding.UTF8, "application/json");
 
@@ -73,11 +73,28 @@ namespace QuickbaseNet.Services
             if (response.IsSuccessStatusCode)
             {
                 var jsonResponse = await response.Content.ReadAsStringAsync();
-                return (JsonConvert.DeserializeObject<QuickbaseRecordUpdateResponse>(jsonResponse), null, true);
+
+                // Check if data is null or empty
+                if (string.IsNullOrEmpty(jsonResponse))
+                {
+                    return QuickbaseResult.Failure<QuickbaseRecordUpdateResponse>(QuickbaseError.NotFound("QuickbaseNet.Failure",
+                                               "No records found", $"The query did not find any records matching that criteria"));
+                }
+
+                return QuickbaseResult.Success(JsonConvert.DeserializeObject<QuickbaseRecordUpdateResponse>(jsonResponse));
             }
 
             var errorResponse = await response.Content.ReadAsStringAsync();
-            return (null, JsonConvert.DeserializeObject<QuickbaseErrorResponse>(errorResponse), false);
+
+            // Check if its 4xx error
+            if (response.StatusCode >= System.Net.HttpStatusCode.BadRequest &&
+                response.StatusCode < System.Net.HttpStatusCode.InternalServerError)
+            {
+                return QuickbaseResult.Failure<QuickbaseRecordUpdateResponse>(QuickbaseError.ClientError("QuickbaseNet.ClientError", errorResponse, "Client error"));
+            }
+
+            // Its a 5xx error
+            return QuickbaseResult.Failure<QuickbaseRecordUpdateResponse>(QuickbaseError.ServerError("QuickbaseNet.ServerError", errorResponse, "Server error"));
         }
 
         public async Task<(QuickbaseRecordUpdateResponse Response, QuickbaseErrorResponse Error, bool IsSuccess)>

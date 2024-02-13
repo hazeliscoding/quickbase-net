@@ -73,9 +73,9 @@ namespace QuickbaseNet.Helpers
         {
             private readonly Dictionary<string, FieldValue> _fields = new Dictionary<string, FieldValue>();
 
-            public RecordBuilder AddField(string fieldId, string value)
+            public RecordBuilder AddField<T>(string fieldId, T value)
             {
-                _fields[fieldId] = new FieldValue { Value = value };
+                _fields[fieldId] = new FieldValue { Value = value }; 
                 return this;
             }
 
