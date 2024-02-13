@@ -129,5 +129,46 @@ namespace QuickbaseNet.Services
             // Its a 5xx error
             return QuickbaseResult.Failure<QuickbaseRecordUpdateResponse>(QuickbaseError.ServerError("QuickbaseNet.ServerError", errorResponse, "Server error"));
         }
+
+        public async Task<QuickbaseResult<QuickbaseRecordUpdateResponse>> DeleteRecords(
+            DeleteRecordRequest quickBaseRequest)
+        {
+            // Serialize your request object into a JSON string
+            var requestJson = JsonConvert.SerializeObject(quickBaseRequest);
+            HttpContent content = new StringContent(requestJson, Encoding.UTF8, "application/json");
+
+            // Create an HttpRequestMessage for DELETE
+            var request = new HttpRequestMessage(HttpMethod.Delete, "/v1/records")
+            {
+                Content = content
+            };
+
+            // Send the request
+            var response = await Client.SendAsync(request);
+
+            // The rest of your method remains the same
+            if (response.IsSuccessStatusCode)
+            {
+                var jsonResponse = await response.Content.ReadAsStringAsync();
+
+                if (string.IsNullOrEmpty(jsonResponse))
+                {
+                    return QuickbaseResult.Failure<QuickbaseRecordUpdateResponse>(QuickbaseError.NotFound("QuickbaseNet.Failure",
+                        "No records found", $"The query did not find any records matching that criteria"));
+                }
+
+                return QuickbaseResult.Success(JsonConvert.DeserializeObject<QuickbaseRecordUpdateResponse>(jsonResponse));
+            }
+
+            var errorResponse = await response.Content.ReadAsStringAsync();
+
+            if (response.StatusCode >= System.Net.HttpStatusCode.BadRequest &&
+                response.StatusCode < System.Net.HttpStatusCode.InternalServerError)
+            {
+                return QuickbaseResult.Failure<QuickbaseRecordUpdateResponse>(QuickbaseError.ClientError("QuickbaseNet.ClientError", errorResponse, "Client error"));
+            }
+
+            return QuickbaseResult.Failure<QuickbaseRecordUpdateResponse>(QuickbaseError.ServerError("QuickbaseNet.ServerError", errorResponse, "Server error"));
+        }
     }
 }
