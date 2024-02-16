@@ -15,7 +15,7 @@ namespace QuickbaseNet.Services
     public class QuickbaseClient
     {
         private const string BaseUrl = "https://api.quickbase.com";
-        private const string UserAgent = "QuickbaseNet/1.0.0";
+        private const string UserAgent = "QuickbaseNet/1.0.1";
 
         /// <summary>
         /// Gets or sets the HTTP client used to make requests to the QuickBase API.
