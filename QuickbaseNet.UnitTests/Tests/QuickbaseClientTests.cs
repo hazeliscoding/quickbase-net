@@ -5,8 +5,9 @@ using QuickbaseNet.Requests;
 using QuickbaseNet.Responses;
 using QuickbaseNet.Services;
 using QuickbaseNet.UnitTests.Mocks;
+using QuickbaseNet.UnitTests.Utility;
 
-namespace QuickbaseNet.UnitTests.QuickbaseClientTests;
+namespace QuickbaseNet.UnitTests.Tests;
 
 public class QuickbaseClientTests
 {
@@ -23,10 +24,36 @@ public class QuickbaseClientTests
     }
 
     [Fact]
+    public async Task Constructor_ThrowsArgumentNullException_WhenRealmIsNull()
+    {
+        // Arrange
+        var realm = string.Empty;
+
+        // Act
+        var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => Task.FromResult(new QuickbaseClient(realm, TestToken)));
+
+        // Assert
+        Assert.Equal("realm", exception.ParamName);
+    }
+
+    [Fact]
+    public async Task Constructor_ThrowsArgumentNullException_WhenTokenIsNull()
+    {
+        // Arrange
+        var token = string.Empty;
+
+        // Act
+        var exception = await Assert.ThrowsAsync<ArgumentNullException>(() => Task.FromResult(new QuickbaseClient(TestRealm, token)));
+
+        // Assert
+        Assert.Equal("userToken", exception.ParamName);
+    }
+
+    [Fact]
     public async Task QueryRecords_ReturnsSuccessResponse_WhenCalled()
     {
         // Arrange
-        var request = new QuickbaseQueryRequest();
+        var request = new Builder().Build<QuickbaseQueryRequest>();
 
         // Act
         var response = await _client.QueryRecords(request);
@@ -40,10 +67,31 @@ public class QuickbaseClientTests
     }
 
     [Fact]
-    public async Task QueryRecords_ReturnsErrorResponse_WhenBadRequestOccurs()
+    public async Task QueryRecords_ReturnsErrorResponse_When4xxOccurs()
     {
         // Arrange
         SetupMockHandlerWithErrorResponse();
+        var request = new QuickbaseQueryRequest
+        {
+            From = "tableId",
+            Where = "{1.CT.'query'}",
+            Select = [1, 2, 3]
+        };
+
+        // Act
+        var actualResponse = await _client.QueryRecords(request);
+
+        // Assert
+        Assert.False(actualResponse.IsSuccess);
+        Assert.True(actualResponse.IsFailure);
+        Assert.NotNull(actualResponse.QuickbaseError);
+    }
+
+    [Fact]
+    public async Task QueryRecords_ReturnsErrorResponse_When5xxOccurs()
+    {
+        // Arrange
+        _mockHandler.ResponseStatusCode = HttpStatusCode.InternalServerError;
         var request = new QuickbaseQueryRequest
         {
             From = "tableId",

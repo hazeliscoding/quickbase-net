@@ -2,12 +2,12 @@
 
 ## 📋 Overview
 
-QuickbaseNet is a versatile C# library designed to simplify and streamline interactions with the QuickBase API. <!-- Tailored for developers looking to efficiently perform CRUD operations and build complex queries, QuickbaseNet offers a set of intuitive tools including `QuickBaseCommandBuilder`, `QueryBuilder`, and `QuickbaseClient`. Whether you're managing database records or crafting detailed queries, QuickbaseNet enhances your experience with QuickBase tables through its fluent and user-friendly interfaces. -->
+QuickbaseNet is a versatile C# library designed to simplify and streamline interactions with the QuickBase API. Tailored for developers looking to efficiently perform CRUD operations and build complex queries, QuickbaseNet offers a set of intuitive tools including `QuickBaseCommandBuilder`, `QueryBuilder`, and `QuickbaseClient`. Whether you're managing database records or crafting detailed queries, QuickbaseNet enhances your experience with QuickBase tables through its fluent and user-friendly interfaces.
 
 ## ✨ Features
 
 - **Fluent Interface 🌊**: Methods for building various requests easily and intuitively.
-<!-- - **Comprehensive CRUD Operations 🛠️**: `QuickBaseCommandBuilder` for adding new records, updating existing ones, or deleting records efficiently. -->
+- **Comprehensive CRUD Operations 🛠️**: `QuickBaseCommandBuilder` for adding new records, updating existing ones, or deleting records efficiently.
 - **Advanced Query Support 🔍**: `QueryBuilder` for constructing complex query requests with ease.
 - **Seamless Client Setup 🌐**: `QuickbaseClient` for initializing connections with realm and user token for secure and straightforward API interaction.
 
@@ -33,32 +33,7 @@ QuickbaseNet simplifies working with the QuickBase API across various operations
 // Initialize QuickbaseClient with your realm hostname and user token
 var quickbaseClient = new QuickbaseClient("your_realm_hostname", "your_user_token");
 ```
-
-<!--
 ### Handling API Responses 📬
-
-#### Sending a Query Request
-
-```csharp
-// Build a query using QueryBuilder
-var query = new QueryBuilder()
-    .From("bck7gp3q2")
-    .Select(1, 2, 3)
-    .Where("{1.CT.'hello'}")
-    .Build();
-
-// Send the query and handle the response
-var (response, error, isSuccess) = await quickbaseClient.QueryRecords(query);
-
-if (isSuccess)
-{
-    // Process the successful response
-}
-else
-{
-    // Handle the error
-}
-```
 
 #### Inserting Records
 
@@ -66,13 +41,17 @@ else
 // Configure and build an insert request using QuickBaseCommandBuilder
 var insertRequest = new QuickBaseCommandBuilder()
     .ForTable("your_table_id")
-    // Add configuration for insert request...
-    .BuildInsertOrUpdateRequest();
+    .ReturnFields(1, 2, 3) // Specify which fields to return after the insert operation
+    .AddNewRecord(record => record
+        .AddField(6, "New record description") // Add data for field 6
+        .AddField(7, 100) // Add data for field 7
+        .AddField(9, "2024-02-13")) // Add data for field 9
+    .BuildInsertUpdateCommand();
 
 // Send the insert request and handle the response
-var (response, error, isSuccess) = await quickbaseClient.InsertRecords(insertRequest);
+var result = await quickbaseClient.InsertRecords(insertRequest);
 
-if (isSuccess)
+if (result.IsSuccess)
 {
     // Handle successful insert response
 }
@@ -85,16 +64,19 @@ else
 #### Updating Records
 
 ```csharp
-// Configure and build an update request
+// Configure and build an update request using QuickBaseCommandBuilder
 var updateRequest = new QuickBaseCommandBuilder()
     .ForTable("your_table_id")
-    // Add configuration for update request...
-    .BuildInsertOrUpdateRequest();
+    .ReturnFields(1, 2, 3) // Specify which fields to return after the update operation
+    .UpdateRecord(8, record => record // Specify the record to update based on its record ID (8 in this example)
+        .AddField(7, 150) // Update field 7 with a new value
+        .AddField(9, "2024-02-15")) // Update field 9 with a new value
+    .BuildInsertUpdateCommand();
 
 // Send the update request and handle the response
-var (response, error, isSuccess) = await quickbaseClient.UpdateRecords(updateRequest);
+var result = await quickbaseClient.UpdateRecords(updateRequest);
 
-if (isSuccess)
+if (result.IsSuccess)
 {
     // Handle successful update response
 }
@@ -111,13 +93,22 @@ else
 var deleteRequest = new QuickBaseCommandBuilder()
     .ForTable("your_table_id")
     .WithDeletionCriteria("{6.EX.'hello'}")
-    .BuildDeleteRequest();
+    .BuildDeleteCommand();
 
 // Send the delete request and handle the response
-var response = await quickbaseClient.DeleteRecords(deleteRequest);
+var result = await quickbaseClient.DeleteRecords(deleteRequest);
+
+if (result.IsSuccess)
+{
+    // Handle successful delete response
+}
+else
+{
+    // Process the error
+}
 ```
 ##
--->
+
 ### QueryBuilder - Crafting Queries with Precision 🔎
 
 #### Building and Sending a Query 📤
@@ -134,7 +125,16 @@ var query = new QueryBuilder()
     .Build();
 
 // Send the query and handle the response
-var response = await quickbaseClient.QueryRecords(query);
+var result = await quickbaseClient.QueryRecords(query);
+
+if (result.IsSuccess)
+{
+    // Process successful response
+}
+else
+{
+    // Handle error
+}
 ```
 
 ## 👐 Contributing
