@@ -13,12 +13,12 @@
 
 	<PropertyGroup>
 		<PackageId>QuickbaseNet</PackageId>
-		<Version>1.0.1</Version>
+		<Version>1.0.2</Version>
 		<Authors>ducksoop</Authors>
 		<Description>Unofficial Quickbase JSON API wrapper for .NET. Provides Query and Command builders for querying and adding/editing records.</Description>
 		<RepositoryUrl>https://github.com/ducksoop/quickbase-net</RepositoryUrl>
 		<RepositoryType>git</RepositoryType>
-		<PackageReleaseNotes>Initial release; right now only have Query capabilities available.</PackageReleaseNotes>
+		<!-- <PackageReleaseNotes>Initial release; right now only have Query capabilities available.</PackageReleaseNotes> -->
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 		<NoWarn>$(NoWarn);1591</NoWarn>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
