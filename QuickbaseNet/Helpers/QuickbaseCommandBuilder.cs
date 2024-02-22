@@ -125,6 +125,15 @@ namespace QuickbaseNet.Helpers
                 return this;
             }
 
+            public RecordBuilder AddFields(params (int fieldId, dynamic value)[] fields)
+            {
+                foreach (var field in fields)
+                {
+                    AddField(field.fieldId, field.value);
+                }
+                return this;
+            }
+
             /// <summary>
             /// Builds the record.
             /// </summary>
