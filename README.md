@@ -6,14 +6,15 @@ QuickbaseNet is a versatile C# library designed to simplify and streamline inter
 
 ## ✨ Features
 
-- **Fluent Interface 🌊**: Methods for building various requests easily and intuitively.
-- **Comprehensive CRUD Operations 🛠️**: `QuickBaseCommandBuilder` for adding new records, updating existing ones, or deleting records efficiently.
-- **Advanced Query Support 🔍**: `QueryBuilder` for constructing complex query requests with ease.
-- **Seamless Client Setup 🌐**: `QuickbaseClient` for initializing connections with realm and user token for secure and straightforward API interaction.
+- **Fluent Interface 🌊**: Engage with methods that allow for easy and intuitive construction of various requests.
+- **Comprehensive CRUD Operations 🛠️**: Use `QuickBaseCommandBuilder` to add new records, update existing ones, or delete records with efficiency.
+- **Enhanced Record Management 📈**: Improved `RecordBuilder` for more intuitive record modifications and additions.
+- **Advanced Query Support 🔍**: Leverage `QueryBuilder` to construct complex query requests effortlessly.
+- **Seamless Client Setup 🌐**: Initialize connections with `QuickbaseClient`, providing a secure and straightforward way to interact with the API.
 
 ## 💾 Installation
 
-To get started with QuickbaseNet, you can install it via NuGet or clone the repository:
+Get started with QuickbaseNet by installing it via NuGet or cloning the repository:
 
 ```bash
 # Install via NuGet
@@ -25,7 +26,7 @@ git clone https://github.com/ducksoop/quickbase-net.git
 
 ## 🛠️ Usage
 
-QuickbaseNet simplifies working with the QuickBase API across various operations. Here's how you can use its main features:
+QuickbaseNet simplifies QuickBase API interactions. Below are examples showcasing its main features:
 
 ### Initializing QuickbaseClient 🌟
 
@@ -33,88 +34,81 @@ QuickbaseNet simplifies working with the QuickBase API across various operations
 // Initialize QuickbaseClient with your realm hostname and user token
 var quickbaseClient = new QuickbaseClient("your_realm_hostname", "your_user_token");
 ```
+
 ### Handling API Responses 📬
 
 #### Inserting Records
 
 ```csharp
-// Configure and build an insert request using QuickBaseCommandBuilder
+// Use QuickBaseCommandBuilder to configure and build an insert request
 var insertRequest = new QuickBaseCommandBuilder()
     .ForTable("your_table_id")
-    .ReturnFields(1, 2, 3) // Specify which fields to return after the insert operation
+    .ReturnFields(1, 2, 3)
     .AddNewRecord(record => record
-        .AddField(6, "New record description") // Add data for field 6
-        .AddField(7, 100) // Add data for field 7
-        .AddField(9, "2024-02-13")) // Add data for field 9
+        .AddFields(
+            (6, "New record description"),
+            (7, 100),
+            (9, "2024-02-13"))
+    )
     .BuildInsertUpdateCommand();
 
-// Send the insert request and handle the response
+// Send the request and handle the response
 var result = await quickbaseClient.InsertRecords(insertRequest);
 
-if (result.IsSuccess)
-{
-    // Handle successful insert response
-}
-else
-{
-    // Process the error
+if (result.IsSuccess) {
+    // Success logic
+} else {
+    // Error handling
 }
 ```
 
 #### Updating Records
 
 ```csharp
-// Configure and build an update request using QuickBaseCommandBuilder
+// Configure and build an update request with QuickBaseCommandBuilder
 var updateRequest = new QuickBaseCommandBuilder()
     .ForTable("your_table_id")
     .ReturnFields(1, 2, 3) // Specify which fields to return after the update operation
     .UpdateRecord(8, record => record // Specify the record to update based on its record ID (8 in this example)
         .AddField(7, 150) // Update field 7 with a new value
         .AddField(9, "2024-02-15")) // Update field 9 with a new value
-    .BuildInsertUpdateCommand();
+    .BuildInsertUpdateCommand();    .BuildInsertUpdateCommand();
 
-// Send the update request and handle the response
+// Send the request and handle the response
 var result = await quickbaseClient.UpdateRecords(updateRequest);
 
-if (result.IsSuccess)
-{
-    // Handle successful update response
-}
-else
-{
-    // Process the error
+if (result.IsSuccess) {
+    // Success logic
+} else {
+    // Error handling
 }
 ```
 
 #### Deleting Records
 
 ```csharp
-// Build a delete request using QuickBaseCommandBuilder
+// Build and send a delete request with QuickBaseCommandBuilder
 var deleteRequest = new QuickBaseCommandBuilder()
     .ForTable("your_table_id")
     .WithDeletionCriteria("{6.EX.'hello'}")
     .BuildDeleteCommand();
 
-// Send the delete request and handle the response
+// Process the response
 var result = await quickbaseClient.DeleteRecords(deleteRequest);
 
-if (result.IsSuccess)
-{
-    // Handle successful delete response
-}
-else
-{
-    // Process the error
+if (result.IsSuccess) {
+    // Success logic
+} else {
+    // Error handling
 }
 ```
-##
 
-### QueryBuilder - Crafting Queries with Precision 🔎
+### QueryBuilder - Precision in Crafting Queries 🔎
 
 #### Building and Sending a Query 📤
 
 ```csharp
-// Create a query using QueryBuilder
+// Construct a query with QueryBuilder
 var query = new QueryBuilder()
     .From("bck7gp3q2")
     .Select(1, 2, 3)
@@ -124,22 +118,21 @@ var query = new QueryBuilder()
     .GroupBy(6, "equal-values")
     .Build();
 
-// Send the query and handle the response
+// Execute the query and process the response
 var result = await quickbaseClient.QueryRecords(query);
 
-if (result.IsSuccess)
-{
-    // Process successful response
-}
-else
-{
-    // Handle error
+if (result.IsSuccess) {
+    // Success logic
+} else {
+    // Error handling
 }
 ```
 
 ## 👐 Contributing
 
-Contributions are what make the open source community such an amazing place to learn, inspire, and create. Any contributions you make are **greatly appreciated**.
+Contributions are
+
+ greatly appreciated and help make the open-source community an amazing place to learn, inspire, and create. Feel free to contribute!
 
 ## 📜 License
 
