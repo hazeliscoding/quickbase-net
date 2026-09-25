@@ -3,6 +3,7 @@ name: .NET CI/CD
 on:
   push:
     branches: [ master ]
+    tags: [ 'v*' ]
   pull_request:
     branches: [ master ]
 
@@ -11,12 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v7
 
     - name: Setup .NET
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v6
       with:
-        dotnet-version: '8.0.x' 
+        dotnet-version: '8.0.x'
 
     - name: Restore dependencies
       run: dotnet restore
@@ -27,9 +28,11 @@ jobs:
     - name: Test
       run: dotnet test --no-build --verbosity normal
 
+    # Releases come from version tags only: pushing v1.2.3 packs and publishes 1.2.3.
     - name: Pack
-      run: dotnet pack -c Release -o out
+      if: startsWith(github.ref, 'refs/tags/v')
+      run: dotnet pack QuickbaseNet -c Release -o out -p:Version=${GITHUB_REF_NAME#v}
 
     - name: Push to NuGet
+      if: startsWith(github.ref, 'refs/tags/v')
       run: dotnet nuget push out/*.nupkg -k ${{secrets.NUGET_API_KEY}} -s https://api.nuget.org/v3/index.json
-      if: github.ref == 'refs/heads/master' && github.event_name == 'push'
