@@ -12,11 +12,25 @@ gets built next, in what order, and the decisions already made.
   that changes an existing signature or an existing result waits for 2.0.
 - **Records first.** The library wraps the records API: query, insert, update and delete. Other
   endpoints get wrapped when someone needs one, not for completeness.
+- **Test against the published spec, not a live account.** There's no Quickbase account for
+  day-to-day work. Quickbase's OpenAPI definition, from developer.quickbase.com, stands in for the
+  service: its examples are the test fixtures. The spec shows what the API is documented to do,
+  so each release still gets one check against a real realm, through an opt-in smoke test.
 
 ## M1: 1.1, fill the gaps
 
 - [ ] Renew the `NUGET_API_KEY` repo secret. The current one dates from January 2024, and NuGet
   keys expire within a year.
+- [ ] Commit Quickbase's OpenAPI definition to the test project. Parse its example responses
+  through the library's response types, and check the builders' request bodies against its
+  request examples.
+- [ ] Make `MockHttpMessageHandler` record every request, so tests can assert the path, method,
+  `QB-Realm-Hostname` and `Authorization` headers, and the JSON body. Today it ignores the request.
+- [ ] A constructor overload that takes an `HttpClient` and still sets the auth headers on it. It's
+  an addition, so it fits 1.x. Tests use it instead of replacing `Client`, which skips the
+  constructor's header setup.
+- [ ] Hand-written fakes for what the spec's examples don't show: a query paged across three
+  pages, an upsert with failed lines, a 429, an HTML 502 page and a timeout.
 - [ ] Paging: `.Skip()` and `.Top()` on `QuickbaseQueryBuilder`. The request already has an
   `Options` field, but the builder never sets it.
 - [ ] A `QueryAllRecords` method that keeps requesting pages until `metadata.totalRecords` is
@@ -33,15 +47,20 @@ gets built next, in what order, and the decisions already made.
 - [ ] Build the user agent from the assembly version. It's hardcoded as `QuickbaseNet/1.0.1`.
 - [ ] Tests for `InsertRecords`, `UpdateRecords`, `DeleteRecords` and both builders, including
   their error paths. Today's 7 tests cover the constructor, `QueryRecords` and the result type.
+- [ ] An opt-in smoke test against a real realm: query, insert, update and delete in one table. It
+  runs only when `QB_REALM`, `QB_TOKEN` and `QB_TABLE` are set, and skips otherwise.
+- [ ] Run the smoke test against a real realm once, from a Quickbase trial or a user who has a
+  realm.
 - [ ] Document paging and upsert results in the README, then tag `v1.1.0`.
 
 **Done when:** a query through the builder can read every record in a table larger than one page,
-an upsert reports its created IDs and line errors, and no HTTP or network failure throws.
+an upsert reports its created IDs and line errors, and no HTTP or network failure throws. All of it
+is covered by tests built on the spec, and the smoke test has passed against a real realm.
 
 ## M2: 2.0, modernize
 
-- [ ] Take an `HttpClient` in the constructor, so the client works with `IHttpClientFactory`.
-  Today each client creates its own, and replacing `Client` silently drops the auth headers.
+- [ ] Remove the settable `Client` property, so the `HttpClient` constructor from 1.1 is the only
+  way to supply one. Replacing `Client` silently drops the auth headers.
 - [ ] `services.AddQuickbase(...)` for ASP.NET Core, in a small companion package so the core
   package doesn't depend on `Microsoft.Extensions.*`.
 - [ ] A query with no matches succeeds with an empty list instead of returning a `NotFound`
@@ -65,6 +84,8 @@ following the migration notes, and the NuGet page shows the README.
 - Look up field IDs by name through the fields endpoint.
 - List tables and run reports.
 - Retry when Quickbase rate-limits a request (HTTP 429).
+- A local fake server generated from the OpenAPI definition, such as Prism, for trying the client
+  by hand without a realm.
 
 ## Not planned
 
