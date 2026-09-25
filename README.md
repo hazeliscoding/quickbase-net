@@ -1,143 +1,139 @@
-# QuickbaseNet 🚀 [![NuGet](https://img.shields.io/nuget/v/QuickbaseNet?label=NuGet&logo=nuget&style=flat-square)](https://www.nuget.org/packages/QuickbaseNet/)
+# QuickbaseNet
 
-## 📋 Overview
+**Talk to Quickbase from .NET without hand-building JSON.** QuickbaseNet wraps Quickbase's JSON
+API in fluent query and command builders. Every call returns a result you check, not an exception
+you catch.
 
-QuickbaseNet is a versatile C# library designed to simplify and streamline interactions with the QuickBase API. Tailored for developers looking to efficiently perform CRUD operations and build complex queries, QuickbaseNet offers a set of intuitive tools including `QuickBaseCommandBuilder`, `QueryBuilder`, and `QuickbaseClient`. Whether you're managing database records or crafting detailed queries, QuickbaseNet enhances your experience with QuickBase tables through its fluent and user-friendly interfaces.
+Quickbase's API addresses everything by numeric field ID. A query is a JSON body with a table ID,
+a list of field IDs and a where clause in Quickbase's own query language, like `{6.EX.'hello'}`.
+Records come back as dictionaries keyed by field ID, with every value wrapped in an object:
+`{"6": {"value": "hello"}}`. Each request also needs your realm hostname and a user token in
+custom headers. QuickbaseNet sets the headers once and builds the request bodies for you.
 
-## ✨ Features
+> **Status:** 1.0.2 on [NuGet](https://www.nuget.org/packages/QuickbaseNet/), stable. It covers
+> querying, inserting, updating and deleting records. Apps, tables, fields and reports aren't
+> wrapped.
 
-- **Fluent Interface 🌊**: Engage with methods that allow for easy and intuitive construction of various requests.
-- **Comprehensive CRUD Operations 🛠️**: Use `QuickBaseCommandBuilder` to add new records, update existing ones, or delete records with efficiency.
-- **Enhanced Record Management 📈**: Improved `RecordBuilder` for more intuitive record modifications and additions.
-- **Advanced Query Support 🔍**: Leverage `QueryBuilder` to construct complex query requests effortlessly.
-- **Seamless Client Setup 🌐**: Initialize connections with `QuickbaseClient`, providing a secure and straightforward way to interact with the API.
+## Install
 
-## 💾 Installation
-
-Get started with QuickbaseNet by installing it via NuGet or cloning the repository:
-
-```bash
-# Install via NuGet
-Install-Package QuickbaseNet
-
-# Or clone the repository
-git clone https://github.com/ducksoop/quickbase-net.git
+```sh
+dotnet add package QuickbaseNet
 ```
 
-## 🛠️ Usage
+It targets .NET Standard 2.0 and 2.1, .NET Framework 4.8, .NET 5 and .NET 6, so it runs in older
+.NET Framework apps as well as current .NET.
 
-QuickbaseNet simplifies QuickBase API interactions. Below are examples showcasing its main features:
-
-### Initializing QuickbaseClient 🌟
+## Usage
 
 ```csharp
-// Initialize QuickbaseClient with your realm hostname and user token
-var quickbaseClient = new QuickbaseClient("your_realm_hostname", "your_user_token");
+using QuickbaseNet.Helpers;
+using QuickbaseNet.Services;
+
+// Your realm is the part before .quickbase.com.
+var client = new QuickbaseClient("your-realm", "your-user-token");
 ```
 
-### Handling API Responses 📬
-
-#### Inserting Records
+### Query records
 
 ```csharp
-// Use QuickBaseCommandBuilder to configure and build an insert request
-var insertRequest = new QuickBaseCommandBuilder()
-    .ForTable("your_table_id")
-    .ReturnFields(1, 2, 3)
-    .AddNewRecord(record => record
-        .AddFields(
-            (6, "New record description"),
-            (7, 100),
-            (9, "2024-02-13"))
-    )
-    .BuildInsertUpdateCommand();
-
-// Send the request and handle the response
-var result = await quickbaseClient.InsertRecords(insertRequest);
-
-if (result.IsSuccess) {
-    // Success logic
-} else {
-    // Error handling
-}
-```
-
-#### Updating Records
-
-```csharp
-// Configure and build an update request with QuickBaseCommandBuilder
-var updateRequest = new QuickBaseCommandBuilder()
-    .ForTable("your_table_id")
-    .ReturnFields(1, 2, 3) // Specify which fields to return after the update operation
-    .UpdateRecord(8, record => record // Specify the record to update based on its record ID (8 in this example)
-        .AddField(7, 150) // Update field 7 with a new value
-        .AddField(9, "2024-02-15")) // Update field 9 with a new value
-    .BuildInsertUpdateCommand();    .BuildInsertUpdateCommand();
-
-// Send the request and handle the response
-var result = await quickbaseClient.UpdateRecords(updateRequest);
-
-if (result.IsSuccess) {
-    // Success logic
-} else {
-    // Error handling
-}
-```
-
-#### Deleting Records
-
-```csharp
-// Build and send a delete request with QuickBaseCommandBuilder
-var deleteRequest = new QuickBaseCommandBuilder()
-    .ForTable("your_table_id")
-    .WithDeletionCriteria("{6.EX.'hello'}")
-    .BuildDeleteCommand();
-
-// Process the response
-var result = await quickbaseClient.DeleteRecords(deleteRequest);
-
-if (result.IsSuccess) {
-    // Success logic
-} else {
-    // Error handling
-}
-```
-
-### QueryBuilder - Precision in Crafting Queries 🔎
-
-#### Building and Sending a Query 📤
-
-```csharp
-// Construct a query with QueryBuilder
-var query = new QueryBuilder()
-    .From("bck7gp3q2")
-    .Select(1, 2, 3)
-    .Where("{1.CT.'hello'}")
-    .SortBy(4, "ASC")
-    .SortBy(5, "ASC")
+var query = new QuickbaseQueryBuilder()
+    .From("bck7gp3q2")          // table ID
+    .Select(3, 6, 7)            // field IDs to return
+    .Where("{6.CT.'hello'}")    // field 6 contains "hello"
+    .SortBy(7, "DESC")
     .GroupBy(6, "equal-values")
     .Build();
 
-// Execute the query and process the response
-var result = await quickbaseClient.QueryRecords(query);
+var result = await client.QueryRecords(query);
 
-if (result.IsSuccess) {
-    // Success logic
-} else {
-    // Error handling
+if (result.IsSuccess)
+{
+    foreach (var record in result.Value.Data)
+    {
+        var description = record["6"].GetValue<string>();
+        var amount = record["7"].GetValue<decimal>();
+    }
 }
 ```
 
-## 👐 Contributing
+A query that matches nothing comes back as a `NotFound` failure, not an empty list.
 
-Contributions are
+### Insert and update records
 
- greatly appreciated and help make the open-source community an amazing place to learn, inspire, and create. Feel free to contribute!
+```csharp
+var command = new QuickbaseCommandBuilder()
+    .ForTable("bck7gp3q2")
+    .ReturnFields(3, 6, 7)
+    .AddNewRecord(record => record
+        .AddFields(
+            (6, "New record"),
+            (7, 100),
+            (9, "2024-02-13")))
+    .UpdateRecord(8, record => record    // record ID 8
+        .AddField(7, 150))
+    .BuildInsertUpdateCommand();
 
-## 📜 License
+var result = await client.InsertRecords(command);
+```
 
-Distributed under the MIT License. See [LICENSE](https://github.com/ducksoop/quickbase-net/blob/master/LICENSE.txt) for more information.
+Inserts and updates can share one request, because both go to Quickbase's upsert endpoint.
+`UpdateRecord` fills in the built-in Record ID# field (3) for you. `UpdateRecords` sends the same
+request, so use whichever name reads better.
 
-## 📚 Additional Resources
+### Delete records
 
-- [QuickBase API Documentation](https://developer.quickbase.com)
+```csharp
+var command = new QuickbaseCommandBuilder()
+    .ForTable("bck7gp3q2")
+    .WithDeletionCriteria("{6.EX.'hello'}")   // every record where field 6 is exactly "hello"
+    .BuildDeleteCommand();
+
+var result = await client.DeleteRecords(command);
+```
+
+### Handle errors
+
+```csharp
+if (result.IsFailure)
+{
+    var error = result.QuickbaseError;
+    // error.Type is ClientError (4xx), ServerError (5xx) or NotFound.
+    Console.WriteLine($"{error.Type}: {error.Message}");
+}
+```
+
+Reading `result.Value` on a failure throws, so check `IsSuccess` first.
+
+## What it does
+
+- **Queries** with `QuickbaseQueryBuilder`: select, where, sort and group.
+- **Inserts and updates** with `QuickbaseCommandBuilder`: several records per request and several
+  fields per record, with typed values.
+- **Deletes** every record that matches a where clause.
+- **Returns results, not exceptions.** Each call returns a `QuickbaseResult<T>` with `IsSuccess`,
+  `Value` and a typed `QuickbaseError`.
+- **Sets up the client once.** The realm, user token and user agent go into the headers when you
+  create the client.
+
+## Development
+
+You need the .NET 8 SDK.
+
+```sh
+dotnet build
+dotnet test     # xUnit, against a mocked HTTP handler: no Quickbase account needed
+```
+
+CI builds and tests every push and pull request. Releases come from version tags: pushing
+`v1.2.3` packs version 1.2.3 and publishes it to NuGet.
+
+## Contributing
+
+Issues and pull requests are welcome. Wrapping more of the API, such as tables, fields or
+reports, would be a good place to start.
+
+## License
+
+[MIT](LICENSE.txt)
+
+See also the [Quickbase API documentation](https://developer.quickbase.com).
