@@ -10,9 +10,9 @@ Records come back as dictionaries keyed by field ID, with every value wrapped in
 `{"6": {"value": "hello"}}`. Each request also needs your realm hostname and a user token in
 custom headers. QuickbaseNet sets the headers once and builds the request bodies for you.
 
-> **Status:** 1.0.2 on [NuGet](https://www.nuget.org/packages/QuickbaseNet/), stable. It covers
-> querying, inserting, updating and deleting records. Apps, tables, fields and reports aren't
-> wrapped.
+> **Status:** 1.0.2 on [NuGet](https://www.nuget.org/packages/QuickbaseNet/). It covers querying,
+> inserting, updating and deleting records. Next is 1.1: paging, and the full results of inserts
+> and updates. See [ROADMAP.md](ROADMAP.md).
 
 ## Install
 
@@ -129,8 +129,8 @@ CI builds and tests every push and pull request. Releases come from version tags
 
 ## Contributing
 
-Issues and pull requests are welcome. Wrapping more of the API, such as tables, fields or
-reports, would be a good place to start.
+Issues and pull requests are welcome. The next unchecked item in [ROADMAP.md](ROADMAP.md) is
+what's being built.
 
 ## License
 
