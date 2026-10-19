@@ -129,8 +129,8 @@ CI builds and tests every push and pull request. Releases come from version tags
 
 ## Contributing
 
-Issues and pull requests are welcome. The next unchecked item in [ROADMAP.md](ROADMAP.md) is
-what's being built.
+Issues and pull requests are welcome. [CONTRIBUTING.md](CONTRIBUTING.md) covers setup, where to
+start and what a pull request needs.
 
 ## License
 
