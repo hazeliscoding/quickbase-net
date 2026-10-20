@@ -128,8 +128,8 @@ namespace QuickbaseNet.Helpers
             /// <summary>
             /// Adds multiple fields to the record being built.
             /// </summary>
-            /// <param name="fields"></param>
-            /// <returns></returns>
+            /// <param name="fields">The field IDs and values to add to the record.</param>
+            /// <returns>The current <see cref="RecordBuilder"/> instance.</returns>
             public RecordBuilder AddFields(params (int fieldId, dynamic value)[] fields)
             {
                 foreach (var field in fields)
