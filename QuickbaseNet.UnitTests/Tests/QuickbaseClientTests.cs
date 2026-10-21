@@ -50,6 +50,19 @@ public class QuickbaseClientTests
     }
 
     [Fact]
+    public void Constructor_SetsUserAgentFromAssemblyVersion()
+    {
+        // Arrange
+        var version = typeof(QuickbaseClient).Assembly.GetName().Version!.ToString(3);
+
+        // Act
+        var client = new QuickbaseClient(TestRealm, TestToken);
+
+        // Assert
+        Assert.Equal($"QuickbaseNet/{version}", client.Client.DefaultRequestHeaders.UserAgent.ToString());
+    }
+
+    [Fact]
     public async Task QueryRecords_ReturnsSuccessResponse_WhenCalled()
     {
         // Arrange
