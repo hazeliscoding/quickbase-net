@@ -10,13 +10,13 @@ namespace QuickbaseNet.Models
         /// <summary>
         /// Gets or sets the number of records to skip in the result set.
         /// </summary>
-        [JsonProperty("skip")]
+        [JsonProperty("skip", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public int Skip { get; set; }
 
         /// <summary>
         /// Gets or sets the maximum number of records to return in the result set.
         /// </summary>
-        [JsonProperty("top")]
+        [JsonProperty("top", DefaultValueHandling = DefaultValueHandling.Ignore)]
         public int Top { get; set; }
 
         /// <summary>

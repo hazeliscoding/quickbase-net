@@ -15,6 +15,8 @@ namespace QuickbaseNet.Helpers
         private string _where;
         private List<SortByItem> _sortBy;
         private List<GroupByItem> _groupBy;
+        private int? _skip;
+        private int? _top;
 
         /// <summary>
         /// Specifies the table to query.
@@ -80,6 +82,28 @@ namespace QuickbaseNet.Helpers
         }
 
         /// <summary>
+        /// Skips the given number of records at the start of the result set, for paging.
+        /// </summary>
+        /// <param name="count">The number of records to skip.</param>
+        /// <returns>The current instance of QuickbaseQueryBuilder.</returns>
+        public QuickbaseQueryBuilder Skip(int count)
+        {
+            _skip = count;
+            return this;
+        }
+
+        /// <summary>
+        /// Returns at most the given number of records, for paging.
+        /// </summary>
+        /// <param name="count">The maximum number of records to return.</param>
+        /// <returns>The current instance of QuickbaseQueryBuilder.</returns>
+        public QuickbaseQueryBuilder Top(int count)
+        {
+            _top = count;
+            return this;
+        }
+
+        /// <summary>
         /// Builds the query.
         /// </summary>
         /// <returns>A QuickbaseQueryRequest object representing the query.</returns>
@@ -91,7 +115,10 @@ namespace QuickbaseNet.Helpers
                 Select = _select,
                 Where = _where,
                 SortBy = _sortBy,
-                GroupBy = _groupBy
+                GroupBy = _groupBy,
+                Options = _skip == null && _top == null
+                    ? null
+                    : new Options { Skip = _skip ?? 0, Top = _top ?? 0 }
             };
         }
     }
